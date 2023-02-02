@@ -9,13 +9,6 @@ const baseUrl = `http://dataservice.accuweather.com/locations/v1/cities/search?a
 const weatherBaseUrl = `http://dataservice.accuweather.com/forecasts/v1/daily/1day/`;
 const apiKey = `?apikey=KWo6ksppR8zrOStCw6ZTq2Ir9l5as3hG`;
 
-// fetch(url).then((res)=>{return res.json()})
-// .then((data)=>{
-//     const detial = data;
-//     console.log(detial);
-//     console.log(detial[0].Key);
-// })
-
 btn.addEventListener('click',(e)=>{
     let inputVal = input.value;
     const url = baseUrl + inputVal;
@@ -25,10 +18,12 @@ btn.addEventListener('click',(e)=>{
         output.innerHTML = '';
         const detial = data;
         console.log(detial);
-        console.log(detial[0].Key);
-        output.innerHTML = `<h2>${detial[0].AdministrativeArea.EnglishName}</h2>`;
-        let weatherUrl = weatherBaseUrl + detial[0].Key + apiKey;
-        getCityWeather(weatherUrl);
+        detial.forEach(element => {
+            console.log(element.Key);
+            output.innerHTML += `<h3>${element.EnglishName} in ${element.Country.LocalizedName} :</h3>`;
+            let weatherUrl = weatherBaseUrl + element.Key + apiKey;
+            getCityWeather(weatherUrl);
+        });
     })
     .catch((err)=>{
         console.log(err);
@@ -40,6 +35,11 @@ function getCityWeather(url){
     fetch(url).then((res)=>{return res.json()})
     .then((data)=>{
         console.log(data);
+        data.DailyForecasts.forEach((element)=>{
+            console.log(element);
+            output.innerHTML += `<h5>${element.Day.PrecipitationType}</h5>`
+        })
+        //console.log(data);
     })
     .catch((err)=>{
         console.log(err);
